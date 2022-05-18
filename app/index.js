@@ -1,27 +1,14 @@
-// connect to mongoDB
 const dbConfig = require('./config/db.config');
-const mongoose = require("mongoose");
+const mysql = require('mysql');
 
-mongoose.Promise = global.Promise;
+const connection = mysql.createConnection(dbConfig);
 
-const db = {};
-db.mongoose = mongoose;
-db.url = dbConfig.url;
+connection.connect((err)=> {
+    if (err){
+        throw err;
+    } else {
+        console.log("Connected to the mySQL database: " + dbConfig.database);
+    }
+});
 
-db.palettes = require("./models/palette.model.js")(mongoose);
-// db.resource = require("./models/rescource.model.js")(mongoose);
-
-db.mongoose
-    .connect(db.url, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
-    .then(() => {
-        console.log("Connected to the database!");
-    })
-    .catch(err => {
-        console.log("Cannot connect to the database!", err);
-        process.exit();
-    });
-
-module.exports = db;
+module.exports = connection;
