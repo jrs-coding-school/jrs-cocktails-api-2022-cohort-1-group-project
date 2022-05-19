@@ -38,9 +38,9 @@ CREATE TABLE `cocktails`.`review` (
 INSERT INTO `cocktails`.`user` 
   (`id`, `email`, `password`) 
 VALUES 
-  ('uuid0', 'user1@email.com', 'password'),
-  ('uuid1', 'user2@email.com', 'password'),
-  ('uuid2', 'user3@email.com', 'password'),
-  ('uuid3', 'user4@email.com', 'password'),
-  ('uuid4', 'user5@email.com', 'password'),
-  ('uuid5', 'user6@email.com', 'password');
+  (uuid(), 'user1@email.com', 'password'),
+  (uuid(), 'user2@email.com', 'password'),
+  (uuid(), 'user3@email.com', 'password'),
+  (uuid(), 'user4@email.com', 'password'),
+  (uuid(), 'user5@email.com', 'password'),
+  (uuid(), 'user6@email.com', 'password');
