@@ -56,7 +56,7 @@ exports.login = ( req, res ) => {
         return;
     }
     const query = `
-            SELECT * FROM urls.users
+            SELECT * FROM cocktails.user
             WHERE email = ?;        
         `;
     const placeholders = [ email ];
@@ -129,6 +129,7 @@ exports.deleteUserById = ( req, res ) => {
         }
     } );
 }
+
 exports.makePasswords =async ( req, res ) => {
     const pass = []
     for (let i = 0; i < 10; i++) {
