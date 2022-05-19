@@ -18,7 +18,7 @@ exports.creatNewUser = async ( req, res ) => {
     const encryptedPassword = await bcrypt.hash( password, saltRounds )
 
     const query = `
-    INSERT INTO cocktails.users (id, email, password)
+    INSERT INTO cocktails.user (id, email, password)
     VALUES
     (?, ?, ?);
     `;
@@ -104,7 +104,7 @@ exports.login = ( req, res ) => {
 exports.deleteUserById = ( req, res ) => {
     let { id } = req.params;
 
-    const query = `DELETE FROM users 
+    const query = `DELETE FROM user 
                     WHERE (id = ?);`
 
     const placeholders = [ id ];
@@ -128,5 +128,14 @@ exports.deleteUserById = ( req, res ) => {
             } );
         }
     } );
+}
+exports.makePasswords =async ( req, res ) => {
+    const pass = []
+    for (let i = 0; i < 10; i++) {
+        const encryptedPassword = await bcrypt.hash( 'pass', saltRounds )
+        pass.push(encryptedPassword)
+        
+    }
+    res.send(pass)
 }
 

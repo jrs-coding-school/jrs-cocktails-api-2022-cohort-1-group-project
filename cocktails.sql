@@ -38,9 +38,13 @@ CREATE TABLE `cocktails`.`review` (
 INSERT INTO `cocktails`.`user` 
   (`id`, `email`, `password`) 
 VALUES 
-  (uuid(), 'user1@email.com', 'password'),
-  (uuid(), 'user2@email.com', 'password'),
-  (uuid(), 'user3@email.com', 'password'),
-  (uuid(), 'user4@email.com', 'password'),
-  (uuid(), 'user5@email.com', 'password'),
-  (uuid(), 'user6@email.com', 'password');
+  (uuid(), 'user1@email.com', '$2b$10$wt2o2lmxk8TIoiYVVKRDsewoUbFY75FngwpcITXxFQPoSfs0J38Ke'),
+  (uuid(), 'user2@email.com', '$2b$10$KQa1Av63mMe506ccmzCOZO9nCaIKpcO4Fpwk75o8R5v80ScazfjWi'),
+  (uuid(), 'user3@email.com', '$2b$10$d0yM6cCrMSO6tff3toxfFurhzFxI7wS6G1kcMA8Od3jGmi.LWHtba'),
+  (uuid(), 'user4@email.com', '$2b$10$SeMGQhm.gsfvqkk6.pJA5ukTHHTaJZPMKnT6AwMp6mjSKNob.Jxim'),
+  (uuid(), 'user5@email.com', '$2b$10$oq2vFyknns8ADkzXN1T75uBQco7fnyh7P5thaBc0FZXdq2Dj9J5Ga'),
+  (uuid(), 'user6@email.com', '$2b$10$naF6Cg99jZIIqCBECE6yueA7QbCLXkn1FgthPbz/Z0.rHrE/qsTwe');
+  (uuid(), 'user7@email.com', '$2b$10$/yWXvXW1YOq1tfHAcxN7aeoe1mhjekbBdYqcgrbVPaQ24Gs8lyJcq');
+  (uuid(), 'user8@email.com', '$2b$10$K8zpzjVU.BLCkLpcNGZHLux65IqBmSbR87ZG4mvlJ6xLtSG9rbOs6');
+  (uuid(), 'user9@email.com', '$2b$10$rWVg6//YHif2.aUMlfdd..zpwqulFPl1aLA1nTde2l2iIvs7LSOka');
+  (uuid(), 'user10@email.com', '$2b$10$QvBgK0fkXSnmDCLhltPnfuUZMabPmgV9kgQyHlW1JzU9UVSEJraJ2');
