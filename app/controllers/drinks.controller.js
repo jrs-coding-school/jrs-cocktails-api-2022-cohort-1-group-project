@@ -138,9 +138,9 @@ exports.getDrinkByOneIngredient = ( req, res ) => {
 }
 
 exports.getDrinkByTwoIngredients = ( req, res ) => {
-    res.send( "function not implemented yet" )
-    return;
-    
+    // res.send( "function not implemented yet" )
+    // return;
+
     let { spirit, ingredient } = req.params;
 
     axios.get( `${URL}/1/filter.php?i=${spirit}` )
@@ -155,10 +155,8 @@ exports.getDrinkByTwoIngredients = ( req, res ) => {
                     // flatten -> [[1], [2], [[3, 4], [[5]]]] => [1, 2, 3, 4, 5]
                     let drinks = values.map( v => v.data.drinks )
                     drinks = drinks.flat()
-                    // now filter drinks by some special criteria
-                    // 'extra ingredient' maybe?
 
-                    // filterByExtraIngredient(drinks, ingredient, res)
+                    filterByExtraIngredient( drinks, ingredient, res );
                 } )
                 .catch( err => {
                     res.status( 500 )
@@ -183,5 +181,25 @@ exports.getDrinkByTwoIngredients = ( req, res ) => {
 }
 
 function filterByExtraIngredient ( drinkArr, ingredient, res ) {
-    drinkArr.filter( ( drinkIngredient ) => { } )
+    const filteredDrinks = drinkArr.filter( ( drink ) => checkIfDrinkHasIngredient(drink, ingredient) )
+    if (filteredDrinks.length == 0){
+        res.status(404)
+        .send({
+            message: "Too creative! We don't have any drinks with those two ingredients."
+        })
+    } else{
+        res.send(
+            {
+                drinks: filteredDrinks
+            } )
+        }
+}
+
+function checkIfDrinkHasIngredient(drink, ingredient) {
+    // search all ingredents to see if any of them match the given ingredient
+    for (let i = 0; i < 16; i++){
+        if (drink["strIngredient" + [i]] == ingredient){
+            return true;
+        } 
+    }
 }
