@@ -1,5 +1,5 @@
 
--- Update email by user ID 
+-- Update username by user ID 
 UPDATE `cocktails`.`user` 
   SET `email` = '23322' 
   WHERE (`id` = 'sdfdsf');
