@@ -4,8 +4,6 @@ module.exports = (app) => {
 
     
     // GET REQUESTS
-    app.get("/api/users/favorite/:userId", users.getUserFavoritesById);
-    
     
     // POST REQUESTS
     app.post( "/api/users/signup", users.createNewUser);

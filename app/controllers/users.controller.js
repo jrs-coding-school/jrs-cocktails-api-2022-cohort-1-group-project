@@ -5,40 +5,6 @@ const saltRounds = 10;
 const { v4: uuid } = require( 'uuid' )
 
 
-//GET favs
-
-exports.getUserFavoritesById = ( req, res ) => {
-    let { userId } = req.params;
-
-    const query = `
-        SELECT drinkId
-        FROM cocktails.favorite
-        WHERE userId = ?;`
-
-    const placeholders = [ userId ];
-
-    db.query( query, placeholders, ( err, results ) => {
-        if ( err ) {
-            res.status( 500 )
-                .send( {
-                    message: 'There was a server error',
-                    error: err
-                } );
-        } else if ( results.length == 0 ) {
-            res.status( 404 )
-                .send( {
-                    message: 'No url found at that route',
-                    error: err
-                } )
-        } else {
-            res.send( {
-                // returns and array of objects with property of "drinkId: String"
-                favoriteDrinks: results
-            } );
-        }
-    } );
-}
-
 //POST - sign up & log in
 
 exports.createNewUser = async ( req, res ) => {
@@ -117,7 +83,7 @@ exports.login = ( req, res ) => {
                     message: "Password incorrect"
                 } )
             } else {
-                
+
                 res.send( {
                     message: "Login successful! 🤗",
                     user: username
@@ -128,11 +94,11 @@ exports.login = ( req, res ) => {
 }
 
 //POST - favs & reviews
- 
+
 exports.addNewFavorite = ( req, res ) => {
-    
+
     let { userId, drinkId } = req.body;
-    
+
     if ( !userId || !drinkId ) {
         res.status( 400 ).send( {
             message: 'Must include drinkId'
@@ -168,7 +134,7 @@ exports.addReview = ( req, res ) => {
 
     let { userId, drinkId, rating, comment } = req.body;
 
-    if ( !userId || !drinkId || !rating) {
+    if ( !userId || !drinkId || !rating ) {
         res.status( 400 ).send( {
             message: 'Must include user, drink and rating'
         } )

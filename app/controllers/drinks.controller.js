@@ -70,6 +70,43 @@ exports.getDrinksByName = ( req, res ) => {
         } )
 }
 
+//GET user favs
+exports.getUserFavoritesById = ( req, res ) => {
+    let { userId } = req.params;
+
+    const query = `
+        SELECT drinkId
+        FROM cocktails.favorite
+        WHERE userId = ?;`
+
+    const placeholders = [ userId ];
+
+    db.query( query, placeholders, ( err, results ) => {
+        console.log( results )
+        if ( err ) {
+            res.status( 500 )
+                .send( {
+                    message: 'There was a server error',
+                    error: err
+                } );
+        } else if ( results.length == 0 ) {
+            res.status( 404 )
+                .send( {
+                    message: 'No url found at that route',
+                    error: err
+                } )
+        } else {
+            console.log( results[ 0 ].drinkId )
+
+            let ids = results.map( r => r.drinkId );
+
+            getFullDrinkDataFromIds( ids, res, ( drinks ) => {
+                res.send( { drinks } )
+            } );
+        }
+    } );
+}
+
 exports.getRandomDrink = ( req, res ) => {
 
     axios.get( `${URL}/1/random.php` )
@@ -145,23 +182,15 @@ exports.getDrinkByTwoIngredients = ( req, res ) => {
 
     axios.get( `${URL}/1/filter.php?i=${spirit}` )
         .then( results => {
-            let ids = results.data.drinks.map( d => axios.get( `http://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${d.idDrink}` ) )
+            
+            let ids = results.data.drinks.map( d => d.idDrink );
+            
+            getFullDrinkDataFromIds( ids, res, () => {
 
-            Promise.all( ids )
-                .then( ( values ) => {
-                    // values is all http responses -> data is the data from each response
-                    // data.drinks is the payload we actually want
-                    // map -> get rid of all the filler junk data we dont care about
-                    // flatten -> [[1], [2], [[3, 4], [[5]]]] => [1, 2, 3, 4, 5]
-                    let drinks = values.map( v => v.data.drinks )
-                    drinks = drinks.flat()
+                filterByExtraIngredient( drinks, ingredient, res );
 
-                    filterByExtraIngredient( drinks, ingredient, res );
-                } )
-                .catch( err => {
-                    res.status( 500 )
-                        .send( { message: 'error getting drinks' } )
-                } )
+            } )
+
         } )
         .catch( ( err ) => {
             if ( err.status == undefined ) {
@@ -180,26 +209,54 @@ exports.getDrinkByTwoIngredients = ( req, res ) => {
         } )
 }
 
+/**
+ * 
+ * @param {string[]} ids an array of ids as strings
+ * @param {(drinks) => any} cb a callback function -> the flattened array of drinks is its param
+ */
+const getFullDrinkDataFromIds = async ( ids, res, cb ) => {
+
+    ids = ids.map( id => axios.get( `http://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}` ) );
+
+    Promise.all( ids )
+        .then( ( values ) => {
+            // values is all http responses -> data is the data from each response
+            // data.drinks is the payload we actually want
+            // map -> get rid of all the filler junk data we dont care about
+            // flatten -> [[1], [2], [[3, 4], [[5]]]] => [1, 2, 3, 4, 5]
+            let drinks = values.map( v => v.data.drinks )
+            drinks = drinks.flat();
+
+            // then do something
+            cb( drinks );
+        } )
+        .catch( err => {
+            res.status( 500 )
+                .send( { message: 'error getting drinks' } )
+        } );
+
+}
+
 function filterByExtraIngredient ( drinkArr, ingredient, res ) {
-    const filteredDrinks = drinkArr.filter( ( drink ) => checkIfDrinkHasIngredient(drink, ingredient) )
-    if (filteredDrinks.length == 0){
-        res.status(404)
-        .send({
-            message: "Too creative! We don't have any drinks with those two ingredients."
-        })
-    } else{
+    const filteredDrinks = drinkArr.filter( ( drink ) => checkIfDrinkHasIngredient( drink, ingredient ) )
+    if ( filteredDrinks.length == 0 ) {
+        res.status( 404 )
+            .send( {
+                message: "Too creative! We don't have any drinks with those two ingredients."
+            } )
+    } else {
         res.send(
             {
                 drinks: filteredDrinks
             } )
-        }
+    }
 }
 
-function checkIfDrinkHasIngredient(drink, ingredient) {
+function checkIfDrinkHasIngredient ( drink, ingredient ) {
     // search all ingredents to see if any of them match the given ingredient
-    for (let i = 0; i < 16; i++){
-        if (drink["strIngredient" + [i]] == ingredient){
+    for ( let i = 0; i < 16; i++ ) {
+        if ( drink[ "strIngredient" + [ i ] ] == ingredient ) {
             return true;
-        } 
+        }
     }
 }
