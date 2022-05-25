@@ -10,7 +10,7 @@ module.exports = (app) => {
 
     app.get("/api/drinks/drinkname/:drinkName", drinks.getDrinksByName);
     app.get("/api/drinks/ingredients/:ingredient1", drinks.getDrinkByOneIngredient);
-    app.get("/api/drinks/ingredients/:spirit/:ingredient", drinks.getDrinkByTwoIngredients);
+    app.get("/api/drinks/ingredients/:spirit/:ingredient", drinks.getDrinksByTwoIngredients);
 
 
 }

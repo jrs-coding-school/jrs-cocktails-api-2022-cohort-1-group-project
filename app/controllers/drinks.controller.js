@@ -174,23 +174,63 @@ exports.getDrinkByOneIngredient = ( req, res ) => {
         } )
 }
 
-exports.getDrinkByTwoIngredients = ( req, res ) => {
+// exports.getDrinksByTwoIngredients = ( req, res ) => {
+//     // res.send( "function not implemented yet" )
+//     // return;
+
+//     let { spirit, ingredient } = req.params;
+
+//     axios.get( `${URL}/1/filter.php?i=${spirit}` )
+//         .then( results => {
+            
+//             let ids = results.data.drinks.map( d => d.idDrink );
+//             console.log(ids)
+            
+//             getFullDrinkDataFromIds( ids, res, () => {
+
+//                 filterByExtraIngredient( drinks, ingredient, res );
+
+//             } )
+
+//         } )
+//         .catch( ( err ) => {
+//             if ( err.status == undefined ) {
+//                 res.status( 404 )
+//                     .send( {
+//                         message: 'Yikes! Seems like there is not a cocktail that meets your request ',
+//                         error: err
+//                     } )
+//             } else {
+//                 res.status( 500 )
+//                     .send( {
+//                         message: 'Oops! Server Error. Try again later',
+//                         error: err
+//                     } )
+//             }
+//         } )
+// }
+
+exports.getDrinksByTwoIngredients = ( req, res ) => {
     // res.send( "function not implemented yet" )
     // return;
-
     let { spirit, ingredient } = req.params;
-
     axios.get( `${URL}/1/filter.php?i=${spirit}` )
         .then( results => {
-            
-            let ids = results.data.drinks.map( d => d.idDrink );
-            
-            getFullDrinkDataFromIds( ids, res, () => {
-
-                filterByExtraIngredient( drinks, ingredient, res );
-
-            } )
-
+            let ids = results.data.drinks.map( d => axios.get( `http://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${d.idDrink}` ) )
+            Promise.all( ids )
+                .then( ( values ) => {
+                    // values is all http responses -> data is the data from each response
+                    // data.drinks is the payload we actually want
+                    // map -> get rid of all the filler junk data we dont care about
+                    // flatten -> [[1], [2], [[3, 4], [[5]]]] => [1, 2, 3, 4, 5]
+                    let drinks = values.map( v => v.data.drinks )
+                    drinks = drinks.flat()
+                    filterByExtraIngredient( drinks, ingredient, res );
+                } )
+                .catch( err => {
+                    res.status( 500 )
+                        .send( { message: 'error getting drinks' } )
+                } )
         } )
         .catch( ( err ) => {
             if ( err.status == undefined ) {
@@ -232,7 +272,7 @@ const getFullDrinkDataFromIds = async ( ids, res, cb ) => {
         } )
         .catch( err => {
             res.status( 500 )
-                .send( { message: 'error getting drinks' } )
+                .send( { message: 'big fat error getting drinks' } )
         } );
 
 }
