@@ -61,6 +61,7 @@ exports.login = ( req, res ) => {
             WHERE username = ?;        
         `;
     const placeholders = [ username ];
+    
     db.query( query, placeholders, async ( err, results ) => {
 
         if ( err ) {
@@ -86,7 +87,7 @@ exports.login = ( req, res ) => {
 
                 res.send( {
                     message: "Login successful! 🤗",
-                    user: username
+                    user: results[0]
                 } )
             }
         }
