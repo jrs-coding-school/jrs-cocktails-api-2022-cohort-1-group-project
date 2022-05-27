@@ -7,10 +7,12 @@ module.exports = (app) => {
     // DO NOT CHANGE ORDER
     app.get("/api/drinks/:id", drinks.getDrinkById);
     app.get("/api/drinks/favorites/:userId", drinks.getUserFavoritesById);
-
+    
     app.get("/api/drinks/drinkname/:drinkName", drinks.getDrinksByName);
     app.get("/api/drinks/ingredients/:ingredient1", drinks.getDrinkByOneIngredient);
     app.get("/api/drinks/ingredients/:spirit/:ingredient", drinks.getDrinksByTwoIngredients);
+    
+    app.get("/api/drinks/review/:drinkId", drinks.getUserReviewByDrinkId);
 
 
 }

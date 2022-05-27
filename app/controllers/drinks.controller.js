@@ -107,6 +107,7 @@ exports.getUserFavoritesById = ( req, res ) => {
     } );
 }
 
+
 exports.getRandomDrink = ( req, res ) => {
 
     axios.get( `${URL}/1/random.php` )
@@ -300,3 +301,37 @@ function checkIfDrinkHasIngredient ( drink, ingredient ) {
         }
     }
 }
+
+exports.getUserReviewByDrinkId = ( req, res ) => {
+    let { drinkId } = req.params;
+
+    const query = `
+        SELECT rating, comment
+        FROM cocktails.review
+        WHERE drinkId = ?;`
+
+    const placeholders = [ drinkId ];
+
+    db.query( query, placeholders, ( err, results ) => {
+        console.log( results )
+        if ( err ) {
+            res.status( 500 )
+                .send( {
+                    message: 'There was a server error',
+                    error: err
+                } );
+        } else if (results.length == 0 ) {
+            res.status( 404 )
+                .send( {
+                    message: 'No review found at that route',
+                    error: err
+                } );
+            } else {
+                res.send({
+                    message: "Here are your results",
+                    results: results,
+                })
+            } 
+       }
+    )}
+
