@@ -15,7 +15,7 @@ exports.getDrinkById = ( req, res ) => {
                     } )
             } else {
                 res.send( {
-                    drink: results.data.drinks
+                    drink: results.data.drinks[0]
                 } )
             }
         } )
