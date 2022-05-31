@@ -131,40 +131,6 @@ exports.addNewFavorite = ( req, res ) => {
 
 }
 
-exports.addReview = ( req, res ) => {
-
-    let { userId, drinkId, rating, comment } = req.body;
-
-    if ( !userId || !drinkId || !rating ) {
-        res.status( 400 ).send( {
-            message: 'Must include user, drink and rating'
-        } )
-        return;
-    }
-
-    const query = `
-        INSERT INTO cocktails.review (userId, drinkId, rating, comment)
-        VALUES
-        (?, ?, ?, ?);
-        `;
-
-    const placeholders = [ userId, drinkId, rating, comment ];
-
-    db.query( query, placeholders, ( err, results ) => {
-        if ( err ) {
-            res.status( 500 )
-                .send( {
-                    message: 'There was an error adding the cocktail to your favorites list',
-                    error: err
-                } );
-        } else {
-            res.send( {
-                message: "Review posted! 🤗"
-            } )
-        }
-    } );
-
-}
 
 
 // DELETE
@@ -197,35 +163,6 @@ exports.deleteUserById = ( req, res ) => {
     } );
 }
 
-exports.deleteReview = ( req, res ) => {
-    let { userId, drinkId } = req.params;
-
-    const query = `  
-    DELETE FROM cocktails.review
-        WHERE userId = ?
-        AND drinkId = ?;
-    `
-    const placeholders = [ userId, drinkId ];
-
-    db.query( query, placeholders, ( err, results ) => {
-        if ( err ) {
-            res.status( 500 )
-                .send( {
-                    message: 'There was an error deleting this review',
-                    error: err
-                } );
-        } else if ( results.affectedRows == 0 ) {
-            res.status( 404 )
-                .send( {
-                    message: "Could not delete review"
-                } )
-        } else {
-            res.send( {
-                message: 'Review deleted. Buh-bye! 😬'
-            } );
-        }
-    } );
-}
 
 exports.deleteFavorite = ( req, res ) => {
     let { userId, drinkId } = req.params;

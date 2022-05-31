@@ -9,7 +9,6 @@ module.exports = (app) => {
     app.post( "/api/users/signup", users.createNewUser);
     app.post( "/api/users/login", users.login );
     
-    app.post( "/api/users/review", users.addReview );
     app.post( "/api/users/favorite", users.addNewFavorite );
     
     
@@ -17,7 +16,6 @@ module.exports = (app) => {
     
     app.delete( "/api/users/:id", users.deleteUserById );
     
-    app.delete( "/api/users/review/:userId/:drinkId", users.deleteReview );
     app.delete( "/api/users/favorite/:userId/:drinkId", users.deleteFavorite );
     
     // DO I HAVE DO THIS --v-- //
