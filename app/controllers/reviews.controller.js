@@ -5,7 +5,7 @@ exports.addReview = ( req, res ) => {
     let { userId, drinkId, rating, comment } = req.body;
 
     if ( !userId || !drinkId || !rating ) {
-        console.log(req.body)
+        console.log( req.body )
         res.status( 400 ).send( {
             message: 'Must include user, drink, rating'
         } )
@@ -62,6 +62,40 @@ exports.deleteReview = ( req, res ) => {
         } else {
             res.send( {
                 message: 'Review deleted. Buh-bye! 😬'
+            } );
+        }
+    } );
+}
+
+
+exports.getReviewsByDrinkId = ( req, res ) => {
+
+    let { drinkId } = req.params;
+
+    const query = `
+        SELECT * FROM review
+            WHERE drinkId = ?
+    `;
+
+    const placeholders = [ drinkId ];
+
+    db.query( query, placeholders, ( err, results ) => {
+        if ( err ) {
+            res.status( 500 )
+                .send( {
+                    message: 'There was a server error',
+                    error: err
+                } );
+        } else if ( results.length == 0 ) {
+            res.status( 404 )
+                .send( {
+                    message: 'no reviews found',
+                    error: err
+                } )
+        } else {
+            res.send( {
+                // returns and array of objects with property of "drinkId: String"
+                reviews: results
             } );
         }
     } );
