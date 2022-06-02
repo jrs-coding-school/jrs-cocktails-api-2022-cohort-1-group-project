@@ -18,7 +18,5 @@ module.exports = (app) => {
     
     app.delete( "/api/users/favorite/:userId/:drinkId", users.deleteFavorite );
     
-    // DO I HAVE DO THIS --v-- //
-    // app.get("/api/passwords", users.makePasswords);
     
 }
