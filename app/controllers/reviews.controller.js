@@ -38,14 +38,13 @@ exports.addReview = ( req, res ) => {
 }
 
 exports.deleteReview = ( req, res ) => {
-    let { userId, drinkId } = req.params;
+    let { reviewId } = req.params;
 
     const query = `  
     DELETE FROM cocktails.review
-        WHERE userId = ?
-        AND drinkId = ?;
+        WHERE id = ?;
     `
-    const placeholders = [ userId, drinkId ];
+    const placeholders = [ reviewId ];
 
     db.query( query, placeholders, ( err, results ) => {
         if ( err ) {
